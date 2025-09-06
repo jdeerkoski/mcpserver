@@ -1,9 +1,17 @@
 from typing import Any
 import httpx
 from fastmcp import FastMCP
+from fastmcp.server.auth.providers.jwt import JWTVerifier
 
 # Initialize FastMCP server
 mcp = FastMCP("weather")
+
+# Configure JWT verification against your identity provider
+verifier = JWTVerifier(
+    jwks_uri="https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/jwks.json",
+    issuer="https://dev-v5dtht4xch6aermg.us.auth0.com/",
+    audience="https://www.deerkoski.com"
+)
 
 # Constants
 NWS_API_BASE = "https://api.weather.gov"
@@ -91,4 +99,4 @@ Forecast: {period['detailedForecast']}
 
 if __name__ == "__main__":
     # Initialize and run the server
-    mcp.run(transport="http", port=8000)
+    mcp.run(host="0.0.0.0", transport="http", port=8000, auth=verifier)
