@@ -22,11 +22,11 @@ class CompanyAuthProvider(RemoteAuthProvider):
             base_url="https://www.deerkoski.net",  # Your server base URL
         )
     
-    def get_routes(self) -> list[Route]:
+    def get_routes(self, mcp_path: str | None = None, mcp_endpoint: Any | None = None) -> list[Route]:
         """Add custom endpoints to the standard protected resource routes."""
         
         # Get the standard OAuth protected resource routes
-        routes = super().get_routes()
+        routes = super().get_routes(mcp_path, mcp_endpoint)
         
         # Add authorization server metadata forwarding for client convenience
         async def authorization_server_metadata(request):
