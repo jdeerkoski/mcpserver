@@ -18,7 +18,7 @@ auth = RemoteAuthProvider(
     authorization_servers=[AnyHttpUrl("https://dev-v5dtht4xch6aermg.us.auth0.com")],
     base_url="https://www.deerkoski.net",  # Your server base URL
     # Optional: customize allowed client redirect URIs (defaults to localhost only)
-    allowed_client_redirect_uris=["http://localhost:*", "http://127.0.0.1:*"]
+    # allowed_client_redirect_uris=["http://localhost:*", "http://127.0.0.1:*"]
 )
 
 # Initialize FastMCP server
