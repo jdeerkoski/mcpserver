@@ -4,25 +4,47 @@ from fastmcp import FastMCP
 from fastmcp.server.auth.providers.jwt import JWTVerifier
 from fastmcp.server.auth import RemoteAuthProvider
 from pydantic import AnyHttpUrl
+from starlette.responses import JSONResponse
+from starlette.routing import Route
 
-# Configure JWT verification against your identity provider
-token_verifier = JWTVerifier(
-    jwks_uri="https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/jwks.json",
-    issuer="https://dev-v5dtht4xch6aermg.us.auth0.com/",
-    audience="https://www.deerkoski.com"
-)
-
-# Create the remote auth provider
-auth = RemoteAuthProvider(
-    token_verifier=token_verifier,
-    authorization_servers=[AnyHttpUrl("https://dev-v5dtht4xch6aermg.us.auth0.com")],
-    base_url="https://www.deerkoski.net",  # Your server base URL
-    # Optional: customize allowed client redirect URIs (defaults to localhost only)
-    # allowed_client_redirect_uris=["http://localhost:*", "http://127.0.0.1:*"]
-)
+class CompanyAuthProvider(RemoteAuthProvider):
+    def __init__(self):
+        # Configure JWT verification against your identity provider
+        token_verifier = JWTVerifier(
+            jwks_uri="https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/jwks.json",
+            issuer="https://dev-v5dtht4xch6aermg.us.auth0.com/",
+            audience="https://www.deerkoski.com"
+        )
+        
+        super().__init__(
+            token_verifier=token_verifier,
+            authorization_servers=[AnyHttpUrl("https://dev-v5dtht4xch6aermg.us.auth0.com")],
+            base_url="https://www.deerkoski.net",  # Your server base URL
+        )
+    
+    def get_routes(self) -> list[Route]:
+        """Add custom endpoints to the standard protected resource routes."""
+        
+        # Get the standard OAuth protected resource routes
+        routes = super().get_routes()
+        
+        # Add authorization server metadata forwarding for client convenience
+        async def authorization_server_metadata(request):
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/oauth-authorization-server"
+                )
+                response.raise_for_status()
+                return JSONResponse(response.json())
+        
+        routes.append(
+            Route("/.well-known/oauth-authorization-server", authorization_server_metadata)
+        )
+        
+        return routes
 
 # Initialize FastMCP server
-mcp = FastMCP("weather", auth=auth)
+mcp = FastMCP("weather", auth=CompanyAuthProvider())
 
 # Constants
 NWS_API_BASE = "https://api.weather.gov"
