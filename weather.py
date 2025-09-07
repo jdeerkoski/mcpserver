@@ -36,10 +36,25 @@ class CompanyAuthProvider(RemoteAuthProvider):
                 )
                 response.raise_for_status()
                 return JSONResponse(response.json())
-        
+
+        # Add authorization server metadata forwarding for client convenience
+        async def openid_configuration_metadata(request):
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/openid-configuration"
+                )
+                response.raise_for_status()
+                return JSONResponse(response.json())
+
+
+
         routes.append(
             Route("/.well-known/oauth-authorization-server", authorization_server_metadata)
         )
+
+        routes.append(
+            Route("/.well-known/openid-configuration", openid_configuration_metadata)
+        )        
         
         return routes
 
