@@ -2,16 +2,26 @@ from typing import Any
 import httpx
 from fastmcp import FastMCP
 from fastmcp.server.auth.providers.jwt import JWTVerifier
+from fastmcp.server.auth import RemoteAuthProvider
 
 # Configure JWT verification against your identity provider
-verifier = JWTVerifier(
+token_verifier = JWTVerifier(
     jwks_uri="https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/jwks.json",
     issuer="https://dev-v5dtht4xch6aermg.us.auth0.com/",
     audience="https://www.deerkoski.com"
 )
 
+# Create the remote auth provider
+auth = RemoteAuthProvider(
+    token_verifier=token_verifier,
+    authorization_servers=[AnyHttpUrl("https://dev-v5dtht4xch6aermg.us.auth0.com")],
+    base_url="https://www.deerkoski.net",  # Your server base URL
+    # Optional: customize allowed client redirect URIs (defaults to localhost only)
+    allowed_client_redirect_uris=["http://localhost:*", "http://127.0.0.1:*"]
+)
+
 # Initialize FastMCP server
-mcp = FastMCP("weather", auth=verifier)
+mcp = FastMCP("weather", auth=auth)
 
 # Constants
 NWS_API_BASE = "https://api.weather.gov"
