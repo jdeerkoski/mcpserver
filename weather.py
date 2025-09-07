@@ -3,6 +3,7 @@ import httpx
 from fastmcp import FastMCP
 from fastmcp.server.auth.providers.jwt import JWTVerifier
 from fastmcp.server.auth import RemoteAuthProvider
+from pydantic import AnyHttpUrl
 
 # Configure JWT verification against your identity provider
 token_verifier = JWTVerifier(
