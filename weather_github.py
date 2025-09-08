@@ -59,7 +59,6 @@ async def get_alerts(state: str) -> str:
     """
 
     headers = get_http_headers()
-    logger = fastmcp.utilities.logging.get_logger()
     for header in headers:
         logger.error(f"header: {header}")
 
