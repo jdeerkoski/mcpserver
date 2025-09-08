@@ -7,6 +7,8 @@ from starlette.routing import Route
 from fastmcp.server.auth import OAuthProxy
 from fastmcp.server.auth.providers.jwt import JWTVerifier
 from fastmcp.server.auth.providers.github import GitHubProvider
+from fastmcp import FastMCP, Context
+from fastmcp.servers.http import get_http_request
 
 auth = GitHubProvider(
     client_id="Ov23lidNqzOxfnB4SnYq",
@@ -52,6 +54,13 @@ async def get_alerts(state: str) -> str:
     Args:
         state: Two-letter US state code (e.g. CA, NY)
     """
+
+    request = get_http_request()
+    if request:
+        context.info(f"Incoming Headers: {request.headers}")
+    else:
+        context.info("No HTTP request context available.")
+    
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
 
