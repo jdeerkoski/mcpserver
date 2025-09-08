@@ -8,7 +8,7 @@ from fastmcp.server.auth import OAuthProxy
 from fastmcp.server.auth.providers.jwt import JWTVerifier
 from fastmcp.server.auth.providers.github import GitHubProvider
 from fastmcp import FastMCP, Context
-from fastmcp.servers.http import get_http_request
+from fastmcp.server.http import get_http_request
 
 auth = GitHubProvider(
     client_id="Ov23lidNqzOxfnB4SnYq",
