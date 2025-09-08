@@ -59,8 +59,9 @@ async def get_alerts(state: str) -> str:
     """
 
     headers = get_http_headers()
-    for headername, headervalue in headers.values():
-        logger.error(f"header: name: {headername} value: {headervalue}")
+    for headername in headers.keys():
+        logger.error(f"header: name: {headername}")
+        logger.error(f"        name: {headername} value: {headers[headername]}")
     
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
