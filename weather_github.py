@@ -8,7 +8,10 @@ from fastmcp.server.auth import OAuthProxy
 from fastmcp.server.auth.providers.jwt import JWTVerifier
 from fastmcp.server.auth.providers.github import GitHubProvider
 from fastmcp import FastMCP, Context
-from fastmcp.server.http import get_http_request
+from fastmcp.server.dependencies import get_http_headers
+from fastmcp.utilities.logging import get_logger
+
+logger = get_logger(__name__)
 
 auth = GitHubProvider(
     client_id="Ov23lidNqzOxfnB4SnYq",
@@ -55,11 +58,11 @@ async def get_alerts(state: str) -> str:
         state: Two-letter US state code (e.g. CA, NY)
     """
 
-    request = get_http_request()
-    if request:
-        context.info(f"Incoming Headers: {request.headers}")
-    else:
-        context.info("No HTTP request context available.")
+    headers = get_http_headers()
+    logger = fastmcp.utilities.logging.get_logger()
+    for header in headers:
+        logger.error(f"header: {header}")
+
     
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
