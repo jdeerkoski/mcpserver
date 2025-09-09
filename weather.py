@@ -87,6 +87,21 @@ async def make_nws_request(url: str) -> dict[str, Any] | None:
             return response.json()
         except Exception:
             return None
+        
+async def make_userinfo_request(authtoken: str) -> dict[str, Any] | None:
+    """Make a request to the Userinfo endpointwith proper error handling."""
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "application/json",
+        "authorization": authtoken
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get("https://dev-v5dtht4xch6aermg.us.auth0.com/userinfo", headers=headers, timeout=30.0)
+            response.raise_for_status()
+            return response.json()
+        except Exception:
+            return None        
 
 def format_alert(feature: dict) -> str:
     """Format an alert feature into a readable string."""
@@ -111,6 +126,9 @@ async def get_alerts(state: str) -> str:
     for headername in headers.keys():
         logger.error(f"header: name: {headername}")
         logger.error(f"        name: {headername} value: {headers[headername]}")
+    authtoken = headers["authentication"].removeprefix("Bearer ")
+    userinfo = await make_userinfo_request(authtoken)
+    logger.error(f"userinfo: {userinfo}")
 
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
