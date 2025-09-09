@@ -100,8 +100,8 @@ async def make_userinfo_request(authtoken: str) -> dict[str, Any] | None:
             response = await client.get("https://dev-v5dtht4xch6aermg.us.auth0.com/userinfo", headers=headers, timeout=30.0)
             response.raise_for_status()
             return response.json()
-        except Exception:
-            logger.error(f"Error getting userinfo: {Exception}")
+        except Exception as e:
+            logger.error(e, stack_info=True, exc_info=True)
             return None        
 
 def format_alert(feature: dict) -> str:
