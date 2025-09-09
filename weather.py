@@ -126,7 +126,7 @@ async def get_alerts(state: str) -> str:
     for headername in headers.keys():
         logger.error(f"header: name: {headername}")
         logger.error(f"        name: {headername} value: {headers[headername]}")
-    authtoken = headers["authentication"].removeprefix("Bearer ")
+    authtoken = headers["authorization"].removeprefix("Bearer ")
     userinfo = await make_userinfo_request(authtoken)
     logger.error(f"userinfo: {userinfo}")
 
