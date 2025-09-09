@@ -8,6 +8,11 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 from fastmcp.server.dependencies import get_http_headers
 from fastmcp.utilities.logging import get_logger
+from fastmcp.utilities.logging import configure_logging
+import logging
+
+# Configure FastMCP to output DEBUG logs
+configure_logging(level=logging.DEBUG)
 
 logger = get_logger(__name__)
 
