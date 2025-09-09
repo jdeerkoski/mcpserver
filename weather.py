@@ -101,6 +101,7 @@ async def make_userinfo_request(authtoken: str) -> dict[str, Any] | None:
             response.raise_for_status()
             return response.json()
         except Exception:
+            logger.error(f"Error getting userinfo: {Exception}")
             return None        
 
 def format_alert(feature: dict) -> str:
