@@ -22,7 +22,7 @@ class CompanyAuthProvider(RemoteAuthProvider):
         token_verifier = JWTVerifier(
             jwks_uri="https://dev-v5dtht4xch6aermg.us.auth0.com/.well-known/jwks.json",
             issuer="https://dev-v5dtht4xch6aermg.us.auth0.com/",
-            audience="https://www.deerkoski.net/mcp?v=2"
+            audience="https://www.deerkoski.net/mcp"
         )
         
         super().__init__(
