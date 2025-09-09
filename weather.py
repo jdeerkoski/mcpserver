@@ -92,7 +92,7 @@ async def make_userinfo_request(authtoken: str) -> dict[str, Any] | None:
     """Make a request to the Userinfo endpointwith proper error handling."""
     headers = {
         "User-Agent": USER_AGENT,
-        "Accept": "application/json",
+        "Accept": "*/*",
         "authorization": authtoken
     }
     async with httpx.AsyncClient() as client:
@@ -127,7 +127,7 @@ async def get_alerts(state: str) -> str:
     for headername in headers.keys():
         logger.error(f"header: name: {headername}")
         logger.error(f"        name: {headername} value: {headers[headername]}")
-    authtoken = headers["authorization"].removeprefix("Bearer ")
+    authtoken = headers["authorization"]
     userinfo = await make_userinfo_request(authtoken)
     logger.error(f"userinfo: {userinfo}")
 
