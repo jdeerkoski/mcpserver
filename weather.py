@@ -130,6 +130,7 @@ async def get_alerts(state: str) -> str:
     authtoken = headers["authorization"]
     userinfo = await make_userinfo_request(authtoken)
     logger.error(f"userinfo: {userinfo}")
+    logger.error(f"name: {userinfo[name]}")
 
     url = f"{NWS_API_BASE}/alerts/active/area/{state}"
     data = await make_nws_request(url)
@@ -141,7 +142,7 @@ async def get_alerts(state: str) -> str:
         return "No active alerts for this state."
 
     alerts = [format_alert(feature) for feature in data["features"]]
-    return "\n---\n".join(alerts)
+    return f"\n---\nHi {userinfo[name]}".join(alerts)
 
 @mcp.tool()
 async def get_forecast(latitude: float, longitude: float) -> str:
