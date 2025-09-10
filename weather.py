@@ -142,7 +142,9 @@ async def get_alerts(state: str) -> str:
         return "No active alerts for this state."
 
     alerts = [format_alert(feature) for feature in data["features"]]
-    return f"\n---\nHi {userinfo["name"]}".join(alerts)
+    formatted_alerts = "\n---\n".join(alerts)
+    message = f"Hi {userinfo["name"]}, here are the alerts: " + formatted_alerts
+    return message
 
 @mcp.tool()
 async def get_forecast(latitude: float, longitude: float) -> str:
